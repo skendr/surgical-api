@@ -13,7 +13,9 @@ const createOperation = async (req, res) => {
 
         const suggestedProcedures = await procedureService.getSuggestedProcedures(filename);
 
+
         const operation = new Operation({
+            operationId,
             userId,
             doctorId,
             filename,
@@ -30,9 +32,8 @@ const createOperation = async (req, res) => {
 }
 
 const getOperation = async (req, res) => {
-    const operationId = req.body.operationId;
+    const operationId = req.params.operationId;
     try {
-
         const operation = await Operation.findOne({ operationId });
         if (operation) {
             
@@ -48,19 +49,28 @@ const getOperation = async (req, res) => {
 }
 
 const updateOperation = async (req, res) => {
-    const operationId = req.body.operationId;
+    // potentially only allow userId/doctorId associated w the operation to change data here
+    const operationId = req.params.operationId;
     
     try {
         const operation = await Operation.findOne({ operationId });
         if (operation) {
+
+            // not the best but does the job
+            let suggestedProcedures = operation.suggestedProcedures
            
-            const { userId, doctorId, operationId, filename, procedureName} = req.body;
+            const { userId, doctorId, filename, procedureName} = req.body;
+            if (filename) {
+                suggestedProcedures = await procedureService.getSuggestedProcedures(filename);
+            }
 
             operation.userId = userId ? userId  : operation.userId;
             operation.doctorId = doctorId ? doctorId  : operation.doctorId;
-            operation.operationId = operationId ? operationId  : operation.operationId;
             operation.filename = filename ? filename  : operation.filename;
+
+            // functional case for saving procedure name
             operation.procedureName = procedureName ? procedureName  : operation.procedureName;
+            operation.suggestedProcedures = suggestedProcedures;
 
             await operation.save();
 
@@ -75,7 +85,7 @@ const updateOperation = async (req, res) => {
 }
 
 const deleteOperation = async (req, res) => {
-    const operationId = req.body.operationId;
+    const operationId = req.params.operationId;
     try {
         const result = await Operation.deleteOne({ operationId });
 
@@ -85,7 +95,6 @@ const deleteOperation = async (req, res) => {
 			res.status(404).json({ error: 'Operation Not Found' });
 		}
 	} catch (error) {
-		console.error(error);
 		res.status(500).json({ error: 'Internal Server Error' });
 	}
 };

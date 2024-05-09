@@ -25,10 +25,10 @@ db.once('open', () => {
 });
 
 // CRUD operation endpoints
-app.post('/operation', operationsController.createOperation);
-app.get('/operations/operationId', operationsController.getOperation);
-app.put('/operations/operationId', operationsController.updateOperation);
-app.delete('/operations/operationId', operationsController.deleteOperation);
+app.post('/operations', operationsController.createOperation);
+app.get('/operations/:operationId', operationsController.getOperation);
+app.put('/operations/:operationId', operationsController.updateOperation);
+app.delete('/operations/:operationId', operationsController.deleteOperation);
 
 app.listen(port, () => {
 	console.log(`Server is running on port ${port}`);

@@ -30,7 +30,7 @@ const getProcedureFromKeyword = async (keyword) => {
         const response = await axios.get(url, { params });
         if ( response.status === 200 ) {
             const data = response.data;
-            return data[3]  // gets the 3rd array which contains names of procedures
+            return data[3].flat()  // gets the 3rd array which contains names of procedures
         } else {
             throw new Error("Failed to retrieve data from the API")
         }
