@@ -1,0 +1,8 @@
+uploading a file with a filename, associated user, and surgeon
+"239485719_LASIK_02042021"
+-> separate into tags -> 239485719, LASIK, 02042021 -> run each keyword thru the search API
+returns a list of possible surgeries -> let the user pick most accurate OR replace with new
+
+Suggested surgery name -> on file upload, use file_name (in the future other metadata associated) to provide the user with suggested surgeries
+
+CRUD -> save to db, update, remove, fetch
